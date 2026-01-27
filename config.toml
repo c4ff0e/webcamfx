@@ -1,0 +1,11 @@
+[camera]
+id = 0
+w = 1280
+h = 720
+fps = 30
+
+[model]
+path = "hand_landmarker.task"
+
+[output]
+debug = true
