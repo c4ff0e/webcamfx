@@ -1,3 +1,10 @@
 /.venv
 /output/__pycache__
 /capture/__pycache__
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.vscode/
+.pytest_cache/
+.mypy_cache/

@@ -6,6 +6,7 @@ import capture.camera as camera
 import output.preview as preview
 import logging
 import output.debug_overlay as debug_overlay
+import utils.colorspaces as colorspaces
 from time import perf_counter
 
 with open("config.toml", "rb") as f:
@@ -46,7 +47,7 @@ try: # main loop
             actual_h = capture.get(cv.CAP_PROP_FRAME_HEIGHT)
             fps_reported = capture.get(cv.CAP_PROP_FPS)
             frame_bgr = debug_overlay.draw_dbg_frameinfo(frame_bgr, timestamp, w, h, fps, cam_id, fps_smooth, actual_w, actual_h, fps_reported)
-            
+
         preview.open_preview(frame_bgr)
         
         if preview.should_close():
