@@ -1,1 +1,3 @@
 /.venv
+/output/__pycache__
+/capture/__pycache__
