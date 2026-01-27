@@ -8,7 +8,7 @@ import logging
 import output.debug_overlay as debug_overlay
 import utils.colorspaces as colorspaces
 from time import perf_counter
-
+import tracking.hands as hands
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
 
@@ -22,8 +22,13 @@ w = config["camera"]["w"]
 h = config["camera"]["h"]
 fps = config["camera"]["fps"]
 debug = config["output"]["debug"]
+hand_conf = config["model"]["hand_confidence"]
+tracking_conf = config["model"]["tracking_confidence"]
+hands_path = config["model"]["hands_path"]
 
 capture = camera.open_camera(cam_id, w, h, fps)
+hands_detector = hands.hands_init(hands_path, hand_conf, tracking_conf)
+        
 try: # main loop
     t_prev = perf_counter()
     fps_smooth = 0.0
@@ -35,6 +40,10 @@ try: # main loop
         if frame_bgr is None:
             print("Failed to read frame from camera")
             break
+        # hand tracking stage
+        frame_rgb = colorspaces.bgr2rgb(frame_bgr)
+        mp_image = hands.img_preprocess(frame_rgb)
+        result = hands.track(hands_detector, mp_image, timestamp)
         
         if debug:
             t = perf_counter()
@@ -49,7 +58,6 @@ try: # main loop
             frame_bgr = debug_overlay.draw_dbg_frameinfo(frame_bgr, timestamp, w, h, fps, cam_id, fps_smooth, actual_w, actual_h, fps_reported)
 
         preview.open_preview(frame_bgr)
-        
         if preview.should_close():
             break
         
