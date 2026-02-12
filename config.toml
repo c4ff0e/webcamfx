@@ -1,7 +1,7 @@
 [camera]
 id = 0
-w = 1280
-h = 720
+w = 800
+h = 600
 fps = 30
 
 [model]

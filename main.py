@@ -4,6 +4,7 @@ import mediapipe as mp
 import tomllib
 import capture.camera as camera
 import output.preview as preview
+import output.hands_landmarks as hands_landmarks
 import logging
 import output.debug_overlay as debug_overlay
 import utils.colorspaces as colorspaces
@@ -28,7 +29,10 @@ hands_path = config["model"]["hands_path"]
 
 capture = camera.open_camera(cam_id, w, h, fps)
 hands_detector = hands.hands_init(hands_path, hand_conf, tracking_conf)
-        
+
+actual_w = capture.get(cv.CAP_PROP_FRAME_WIDTH) #for debug and drawing landmarks
+actual_h = capture.get(cv.CAP_PROP_FRAME_HEIGHT)
+
 try: # main loop
     t_prev = perf_counter()
     fps_smooth = 0.0
@@ -40,10 +44,18 @@ try: # main loop
         if frame_bgr is None:
             print("Failed to read frame from camera")
             break
-        # hand tracking stage
-        frame_rgb = colorspaces.bgr2rgb(frame_bgr)
+        # hand tracking
+        frame_rgb = colorspaces.bgr2rgb(frame_bgr) # can be used on every pass
+        
         mp_image = hands.img_preprocess(frame_rgb)
-        result = hands.track(hands_detector, mp_image, timestamp)
+        hands_result, hands_lm = hands.track(hands_detector, mp_image, timestamp)
+        
+        #convert to 2d pos
+        hands_pos = hands.to_hands_pos(hands_lm, actual_w, actual_h) if hands_lm else None # ready to use everywhere else
+        
+        # draw landmarks
+        if hands_pos:
+            frame_bgr = hands_landmarks.draw(frame_bgr, hands_pos)
         
         if debug:
             t = perf_counter()
@@ -51,12 +63,10 @@ try: # main loop
             t_prev = t
             fps_instant = 1.0 / dt if dt > 0 else 0
             fps_smooth = 0.9 * fps_smooth + 0.1 * fps_instant
-            
-            actual_w = capture.get(cv.CAP_PROP_FRAME_WIDTH)
-            actual_h = capture.get(cv.CAP_PROP_FRAME_HEIGHT)
             fps_reported = capture.get(cv.CAP_PROP_FPS)
             frame_bgr = debug_overlay.draw_dbg_frameinfo(frame_bgr, timestamp, w, h, fps, cam_id, fps_smooth, actual_w, actual_h, fps_reported)
 
+        
         preview.open_preview(frame_bgr)
         if preview.should_close():
             break
