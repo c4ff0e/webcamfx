@@ -10,7 +10,6 @@ import output.debug_overlay as debug_overlay
 import utils.colorspaces as colorspaces
 from time import perf_counter
 import tracking.hands as hands
-from dataclasses import dataclass
 import gestures.hands_gestures as hands_gestures
 import output.hands_index as hands_index
 with open("config.toml", "rb") as f:
@@ -18,7 +17,7 @@ with open("config.toml", "rb") as f:
 
 working = True
 
-@dataclass
+
 class Config:
     #camera
     cam_id = config["camera"]["id"]
@@ -31,6 +30,7 @@ class Config:
     hand_confidence = config["hands"]["confidence"]["hand_confidence"]
     tracking_confidence = config["hands"]["confidence"]["tracking_confidence"]
     gesture_confidence = config["hands"]["confidence"]["gesture_confidence"]
+    inactive_threshold = config["hands"]["confidence"]["inactive_threshold"]
     
     #output
     debug = config["output"]["debug"]
@@ -52,9 +52,6 @@ hands_detector = hands.init(Config.hands_path, Config.hand_confidence, Config.tr
 #init gesture state
 hand_state = hands_gestures.GestureState()
 
-actual_w = capture.get(cv.CAP_PROP_FRAME_WIDTH) #for debug and drawing landmarks
-actual_h = capture.get(cv.CAP_PROP_FRAME_HEIGHT)
-
 try: # main loop
     t_prev = perf_counter()
     fps_smooth = 0.0
@@ -66,6 +63,10 @@ try: # main loop
         if frame_bgr is None:
             print("Failed to read frame from camera")
             break
+        
+        actual_w = frame_bgr.shape[1]
+        actual_h = frame_bgr.shape[0]
+        
         # hand tracking
         frame_rgb = colorspaces.bgr2rgb(frame_bgr) # can be used on every pass
         
@@ -84,7 +85,7 @@ try: # main loop
                 
         #check hand gestures
         if hands_pos:
-            hands_state = hand_state.update(hands_pos, Config.gesture_confidence)
+            hands_state = hand_state.update(hands_pos, Config.gesture_confidence, Config.inactive_threshold)
 
             #check what is active and draw
             active_gesture = hand_state.active()
