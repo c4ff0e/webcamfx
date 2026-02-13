@@ -39,7 +39,7 @@ class Config:
     
     #hand gestures
     point_enabled = config["hands"]["gestures"]["point"]["enabled"]
-    point_color = tuple(config["hands"]["gestures"]["point"]["color"])
+    point_color = colorspaces.config2bgr(tuple(config["hands"]["gestures"]["point"]["color"])) #convert from rgb to bgr
     point_radius = config["hands"]["gestures"]["point"]["radius"]
     point_thickness = config["hands"]["gestures"]["point"]["thickness"]
 

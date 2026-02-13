@@ -21,6 +21,6 @@ show_landmarks = false
     
     [hands.gestures.point]
         enabled = true
-        color = [0, 255, 255] #bgr for now
+        color = [255, 0, 0] #rgb
         radius = 20
         thickness = 5

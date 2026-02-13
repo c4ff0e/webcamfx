@@ -6,3 +6,6 @@ def bgr2rgb(frame_bgr):
 def rgb2bgr(frame_rgb):
     frame_bgr = cv.cvtColor(frame_rgb, cv.COLOR_RGB2BGR)
     return frame_bgr
+
+def config2bgr(color_config):
+    return tuple(reversed(color_config))
