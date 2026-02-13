@@ -21,3 +21,10 @@ def draw_dbg_frameinfo(frame_bgr, timestamp, w, h, fps, cam_id, fps_smooth, actu
         cv.putText(frame_bgr, line, (10, y), DEBUG_FONT, DEBUG_FONT_SCALE, DEBUG_FONT_COLOR, DEBUG_FONT_THICKNESS, cv.LINE_AA)
     
     return frame_bgr
+
+def draw_dbg_gestureinfo(frame_bgr, hand_state):
+    if hand_state.point_active:
+        cv.putText(frame_bgr, "Point gesture detected", (10, 150), DEBUG_FONT, DEBUG_FONT_SCALE, (0, 255, 255), DEBUG_FONT_THICKNESS, cv.LINE_AA)
+    if hand_state.middle_active:
+        cv.putText(frame_bgr, "Middle gesture detected", (10, 180), DEBUG_FONT, DEBUG_FONT_SCALE, (0, 255, 255), DEBUG_FONT_THICKNESS, cv.LINE_AA)
+    return frame_bgr

@@ -4,10 +4,23 @@ w = 800
 h = 600
 fps = 30
 
-[model]
-hands_path = "hand_landmarker.task"
-hand_confidence = 0.6
-tracking_confidence = 0.6
-
 [output]
 debug = true
+show_lines = true
+show_landmarks = false
+
+[hands]
+
+    [hands.model]
+        hands_path = "hand_landmarker.task"
+
+    [hands.confidence]
+        hand_confidence = 0.6
+        tracking_confidence = 0.6
+        gesture_confidence = 5 #frames
+    
+    [hands.gestures.point]
+        enabled = true
+        color = [0, 255, 255] #bgr for now
+        radius = 20
+        thickness = 5

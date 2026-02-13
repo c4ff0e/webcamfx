@@ -5,7 +5,7 @@ from dataclasses import dataclass
 MODULE_NAME = "HANDS"
 logging.getLogger(__name__)
 
-def hands_init(path, hand_conf, tracking_conf):
+def init(path, hand_conf, tracking_conf):
     BaseOptions = mp.tasks.BaseOptions
     HandLandmarker = mp.tasks.vision.HandLandmarker
     HandLandmarkerOptions = mp.tasks.vision.HandLandmarkerOptions
@@ -108,30 +108,30 @@ PINKY_PIP = 18
 PINKY_DIP = 19
 PINKY_TIP = 20
 
-def lm_to_pos2d(lm, actual_w, actual_h):
+def lm_to_2d_pos(lm, actual_w, actual_h):
     return pos2d(int(lm.x * actual_w), int(lm.y * actual_h))
 
-def to_hands_pos(hands_lm, actual_w, actual_h):
+def to_2d_pos(hands_lm, actual_w, actual_h): # returns class HandsPos; use this class
     return HandsPos(
-        wrist=lm_to_pos2d(hands_lm[WRIST], actual_w, actual_h),
-        thumb_cmc=lm_to_pos2d(hands_lm[THUMB_CMC], actual_w, actual_h),
-        thumb_mcp=lm_to_pos2d(hands_lm[THUMB_MCP], actual_w, actual_h),
-        thumb_ip=lm_to_pos2d(hands_lm[THUMB_IP], actual_w, actual_h),
-        thumb_tip=lm_to_pos2d(hands_lm[THUMB_TIP], actual_w, actual_h),
-        index_finger_mcp=lm_to_pos2d(hands_lm[INDEX_FINGER_MCP], actual_w, actual_h),
-        index_finger_pip=lm_to_pos2d(hands_lm[INDEX_FINGER_PIP], actual_w, actual_h),
-        index_finger_dip=lm_to_pos2d(hands_lm[INDEX_FINGER_DIP], actual_w, actual_h),
-        index_finger_tip=lm_to_pos2d(hands_lm[INDEX_FINGER_TIP], actual_w, actual_h),
-        middle_finger_mcp=lm_to_pos2d(hands_lm[MIDDLE_FINGER_MCP], actual_w, actual_h),
-        middle_finger_pip=lm_to_pos2d(hands_lm[MIDDLE_FINGER_PIP], actual_w, actual_h),
-        middle_finger_dip=lm_to_pos2d(hands_lm[MIDDLE_FINGER_DIP], actual_w, actual_h),
-        middle_finger_tip=lm_to_pos2d(hands_lm[MIDDLE_FINGER_TIP], actual_w, actual_h),
-        ring_finger_mcp=lm_to_pos2d(hands_lm[RING_FINGER_MCP], actual_w, actual_h),
-        ring_finger_pip=lm_to_pos2d(hands_lm[RING_FINGER_PIP], actual_w, actual_h),
-        ring_finger_dip=lm_to_pos2d(hands_lm[RING_FINGER_DIP], actual_w, actual_h),
-        ring_finger_tip=lm_to_pos2d(hands_lm[RING_FINGER_TIP], actual_w, actual_h),
-        pinky_mcp=lm_to_pos2d(hands_lm[PINKY_MCP], actual_w, actual_h),
-        pinky_pip=lm_to_pos2d(hands_lm[PINKY_PIP], actual_w, actual_h),
-        pinky_dip=lm_to_pos2d(hands_lm[PINKY_DIP], actual_w, actual_h),
-        pinky_tip=lm_to_pos2d(hands_lm[PINKY_TIP], actual_w, actual_h)
+        wrist=lm_to_2d_pos(hands_lm[WRIST], actual_w, actual_h),
+        thumb_cmc=lm_to_2d_pos(hands_lm[THUMB_CMC], actual_w, actual_h),
+        thumb_mcp=lm_to_2d_pos(hands_lm[THUMB_MCP], actual_w, actual_h),
+        thumb_ip=lm_to_2d_pos(hands_lm[THUMB_IP], actual_w, actual_h),
+        thumb_tip=lm_to_2d_pos(hands_lm[THUMB_TIP], actual_w, actual_h),
+        index_finger_mcp=lm_to_2d_pos(hands_lm[INDEX_FINGER_MCP], actual_w, actual_h),
+        index_finger_pip=lm_to_2d_pos(hands_lm[INDEX_FINGER_PIP], actual_w, actual_h),
+        index_finger_dip=lm_to_2d_pos(hands_lm[INDEX_FINGER_DIP], actual_w, actual_h),
+        index_finger_tip=lm_to_2d_pos(hands_lm[INDEX_FINGER_TIP], actual_w, actual_h),
+        middle_finger_mcp=lm_to_2d_pos(hands_lm[MIDDLE_FINGER_MCP], actual_w, actual_h),
+        middle_finger_pip=lm_to_2d_pos(hands_lm[MIDDLE_FINGER_PIP], actual_w, actual_h),
+        middle_finger_dip=lm_to_2d_pos(hands_lm[MIDDLE_FINGER_DIP], actual_w, actual_h),
+        middle_finger_tip=lm_to_2d_pos(hands_lm[MIDDLE_FINGER_TIP], actual_w, actual_h),
+        ring_finger_mcp=lm_to_2d_pos(hands_lm[RING_FINGER_MCP], actual_w, actual_h),
+        ring_finger_pip=lm_to_2d_pos(hands_lm[RING_FINGER_PIP], actual_w, actual_h),
+        ring_finger_dip=lm_to_2d_pos(hands_lm[RING_FINGER_DIP], actual_w, actual_h),
+        ring_finger_tip=lm_to_2d_pos(hands_lm[RING_FINGER_TIP], actual_w, actual_h),
+        pinky_mcp=lm_to_2d_pos(hands_lm[PINKY_MCP], actual_w, actual_h),
+        pinky_pip=lm_to_2d_pos(hands_lm[PINKY_PIP], actual_w, actual_h),
+        pinky_dip=lm_to_2d_pos(hands_lm[PINKY_DIP], actual_w, actual_h),
+        pinky_tip=lm_to_2d_pos(hands_lm[PINKY_TIP], actual_w, actual_h)
     )
