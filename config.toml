@@ -25,3 +25,6 @@ show_landmarks = false
         color = [255, 0, 0] #rgb
         radius = 20
         thickness = 5
+
+[sfx]
+funny_mode = false

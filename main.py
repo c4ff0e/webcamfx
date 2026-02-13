@@ -12,6 +12,7 @@ from time import perf_counter
 import tracking.hands as hands
 import gestures.hands_gestures as hands_gestures
 import output.hands_index as hands_index
+import output.hands_middle as hands_middle
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
 
@@ -42,7 +43,10 @@ class Config:
     point_color = colorspaces.config2bgr(tuple(config["hands"]["gestures"]["point"]["color"])) #convert from rgb to bgr
     point_radius = config["hands"]["gestures"]["point"]["radius"]
     point_thickness = config["hands"]["gestures"]["point"]["thickness"]
-
+    
+    #sfx
+    funny_mode = config["sfx"]["funny_mode"]
+    
 logging.basicConfig(level=logging.DEBUG if Config.debug else None)
 module_name = "MAIN"
 
@@ -51,6 +55,9 @@ capture = camera.open_camera(Config.cam_id, Config.w, Config.h, Config.fps)
 hands_detector = hands.init(Config.hands_path, Config.hand_confidence, Config.tracking_confidence)
 #init gesture state
 hand_state = hands_gestures.GestureState()
+
+prev_active_gesture = None
+active_gesture = None
 
 try: # main loop
     t_prev = perf_counter()
@@ -87,13 +94,21 @@ try: # main loop
         if hands_pos:
             hands_state = hand_state.update(hands_pos, Config.gesture_confidence, Config.inactive_threshold)
 
-            #check what is active and draw
+            #check what is active and activate
             active_gesture = hand_state.active()
+            
             if active_gesture == "POINT" and Config.point_enabled:
                 frame_bgr = hands_index.draw_circle(frame_bgr, Config.point_color, Config.point_radius, Config.point_thickness, hands_pos.index_finger_tip)
-            if active_gesture == "MIDDLE":
-                pass #TODO: add middle finger gesture drawing
             
+            if active_gesture == "MIDDLE" and Config.funny_mode: #it repeats continuosly
+                hands_middle.play_sfx()
+            if active_gesture == "MIDDLE" and active_gesture != prev_active_gesture:
+                hands_middle.play_sfx()
+                prev_active_gesture = active_gesture
+                
+        if active_gesture is None:
+            prev_active_gesture = None
+        
         if Config.debug:
             t = perf_counter()
             dt = t - t_prev

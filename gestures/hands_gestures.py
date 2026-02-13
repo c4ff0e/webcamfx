@@ -17,6 +17,7 @@ class GestureState: #this class can be used everywhere
             self.point_count += 1
             if self.point_count > gesture_confidence:
                 self.point_active = True
+                self.point_count_inactive = 0 # reset inactive count when gesture is active
         else:
             self.point_count = 0
             self.point_count_inactive += 1
@@ -27,6 +28,7 @@ class GestureState: #this class can be used everywhere
             self.middle_count += 1
             if self.middle_count > gesture_confidence:
                 self.middle_active = True
+                self.middle_count_inactive = 0 # reset inactive count when gesture is active
         else:
             self.middle_count = 0
             self.middle_count_inactive += 1
