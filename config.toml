@@ -28,3 +28,6 @@ show_landmarks = false
 
 [sfx]
 funny_mode = false
+
+    [sfx.middle]
+        path = "sfx/faaah.mp3"

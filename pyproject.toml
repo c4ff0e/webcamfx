@@ -10,3 +10,8 @@ dependencies = [
     "playsound3>=3.3.1",
     "pyqt6>=6.10.2",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]

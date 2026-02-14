@@ -1,23 +1,25 @@
-import time
+# libs
 import cv2 as cv
 import mediapipe as mp
 import tomllib
-import capture.camera as camera
-import output.preview as preview
-import output.hands_landmarks as hands_landmarks
 import logging
-import output.debug_overlay as debug_overlay
-import utils.colorspaces as colorspaces
 from time import perf_counter
+
+# modules
 import tracking.hands as hands
 import gestures.hands_gestures as hands_gestures
 import output.hands_index as hands_index
 import output.hands_middle as hands_middle
+import output.debug_overlay as debug_overlay
+import utils.colorspaces as colorspaces
+import capture.camera as camera
+import output.preview as preview
+import output.hands_landmarks as hands_landmarks
+
 with open("config.toml", "rb") as f:
     config = tomllib.load(f)
 
 working = True
-
 
 class Config:
     #camera
@@ -46,6 +48,7 @@ class Config:
     
     #sfx
     funny_mode = config["sfx"]["funny_mode"]
+    middle_sfx_path = config["sfx"]["middle"]["path"]
     
 logging.basicConfig(level=logging.DEBUG if Config.debug else None)
 module_name = "MAIN"
@@ -101,12 +104,12 @@ try: # main loop
                 frame_bgr = hands_index.draw_circle(frame_bgr, Config.point_color, Config.point_radius, Config.point_thickness, hands_pos.index_finger_tip)
             
             if active_gesture == "MIDDLE" and Config.funny_mode: #it repeats continuosly
-                hands_middle.play_sfx()
+                hands_middle.play_sfx(Config.middle_sfx_path)
             if active_gesture == "MIDDLE" and active_gesture != prev_active_gesture:
-                hands_middle.play_sfx()
+                hands_middle.play_sfx(Config.middle_sfx_path)
                 prev_active_gesture = active_gesture
                 
-        if active_gesture is None:
+        if active_gesture is None: #reset prev so sound can play again
             prev_active_gesture = None
         
         if Config.debug:
