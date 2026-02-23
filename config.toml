@@ -17,7 +17,7 @@ show_landmarks = false
     [hands.confidence]
         hand_confidence = 0.6
         tracking_confidence = 0.6
-        gesture_confidence = 5 #frames
+        gesture_confidence = 5  #frames
         inactive_threshold = 2 #frames
     
     [hands.gestures.point]
